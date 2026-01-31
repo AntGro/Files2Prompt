@@ -1,0 +1,4 @@
+- forbid loading .env (add a file with default exclusion -> .idea, etc.)
+- improve the style to have indents
+- when doing + on a folder, all subfiles should be ticked
+- Add num of tokens estimate
