@@ -16,9 +16,41 @@ class FileTree:
         self.max_file_size = max_file_size
         self.filter_pattern = filter_pattern
         self.state_key = state_key
+        self.forbidden_patterns = self._load_forbidden_patterns()
 
         st.session_state.setdefault(f"{state_key}_open_dirs", set())
         st.session_state.setdefault(f"{state_key}_selected_files", {})
+
+    def _load_forbidden_patterns(self) -> list[re.Pattern]:
+        """Load global and project-specific forbidden patterns."""
+        patterns = []
+
+        # Load global forbidden patterns
+        global_forbidden_path = Path(__file__).parent / "FORBIDDEN_PATTERNS.txt"
+        if global_forbidden_path.exists():
+            with open(global_forbidden_path, "r") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#"):
+                        patterns.append(re.compile(line.replace(".", r"\.").replace("*", ".*")))
+
+        # Load project-specific forbidden patterns
+        project_forbidden_path = self.root / ".filetreeignore"
+        if project_forbidden_path.exists():
+            with open(project_forbidden_path, "r") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#"):
+                        patterns.append(re.compile(line.replace(".", r"\.").replace("*", ".*")))
+
+        return patterns
+
+    def _is_forbidden(self, rel_path: str) -> bool:
+        """Check if a path matches any forbidden pattern."""
+        for pattern in self.forbidden_patterns:
+            if pattern.search(rel_path):
+                return True
+        return False
 
     # ---------- public ----------
     @property
@@ -30,6 +62,9 @@ class FileTree:
 
     # ---------- internal ----------
     def _allowed(self, rel_path: str) -> bool:
+        """Check if a path is allowed (not forbidden and matches filter)."""
+        if self._is_forbidden(rel_path):
+            return False
         if self.filter_pattern:
             return bool(self.filter_pattern.search(rel_path))
         return True
@@ -103,7 +138,6 @@ class FileTree:
 
                 if is_open:
                     self._render_dir(path, depth + 1)
-
             else:
                 cols = st.sidebar.columns([0.9, 0.1])
                 with cols[0]:
