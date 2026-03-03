@@ -1,6 +1,4 @@
-- improve the style to have indents
 - when doing + on a folder, all subfiles should be ticked
-- Add num of tokens estimate
 - add optional command-line arg to provide the path to directory to access directly.
 - Add a clear button to unselect everything
 - Improve overall UI style
