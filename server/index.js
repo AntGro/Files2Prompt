@@ -27,8 +27,37 @@ function loadPatterns(filePath) {
     .filter((line) => line && !line.startsWith("#"));
 }
 
+function patternToRegex(line) {
+  let pattern = line.replace(/\\/g, "/").trim();
+  let isDirectory = false;
+
+  if (pattern.endsWith("/")) {
+    isDirectory = true;
+    pattern = pattern.slice(0, -1);
+  }
+
+  pattern = pattern.replace(/^(\.\/)+/, "");
+  pattern = pattern.replace(/^(\.\*\/)+/, "");
+  if (!pattern) return null;
+
+  const hasSlash = pattern.includes("/");
+  const escaped = pattern
+    .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
+    .replace(/\*/g, ".*");
+
+  if (hasSlash) {
+    return new RegExp(`(^|/)${escaped}${isDirectory ? "($|/)" : "$"}`);
+  }
+
+  if (isDirectory) {
+    return new RegExp(`(^|/)${escaped}($|/)`);
+  }
+
+  return new RegExp(`(^|/)${escaped}$`);
+}
+
 function patternsToRegex(patterns) {
-  return patterns.map((line) => new RegExp(line.replace(/\./g, "\\.").replace(/\*/g, ".*")));
+  return patterns.map(patternToRegex).filter(Boolean);
 }
 
 function isForbidden(relPath, patterns) {
@@ -147,6 +176,12 @@ app.get("/api/file", (req, res) => {
   const safeRel = safeRelative(root, absPath);
   if (!safeRel) {
     return res.status(400).json({ error: "invalid path" });
+  }
+
+  const projectPatterns = loadPatterns(path.join(root, ".filetreeignore"));
+  const patterns = [...patternsToRegex(BUILTIN_PATTERNS), ...patternsToRegex(projectPatterns)];
+  if (isForbidden(safeRel, patterns)) {
+    return res.status(403).json({ error: "path is forbidden by ignore rules" });
   }
 
   let stat;
