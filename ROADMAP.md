@@ -1,7 +1,0 @@
-- when doing + on a folder, all subfiles should be ticked
-- add optional command-line arg to provide the path to directory to access directly.
-- Add a clear button to unselect everything
-- Improve overall UI style
-- Add a nice description
-- Add some guidance at start.
-- Use a .git to select all changes not committed yet / select a list of commits and include all changes.
