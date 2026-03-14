@@ -1,59 +1,44 @@
-## Prompt From Tree (React + Express)
+# Files2Prompt
 
-Small tool to browse a local directory tree, select files, and aggregate their contents into a prompt-ready text block.
+**Local folders → prompt-ready text**
 
-Built-in ignore patterns: `*.env`, `.idea`, `__pycache__/`, `*.pyc`, `.DS_Store`, `.git`.
+A sleek, fully client-side tool to browse local directories, select files, and generate prompt-ready text blocks. Perfect for feeding code context to LLMs.
 
-## Prerequisites
+🔒 **Your files never leave your browser** — everything runs locally using the [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API).
 
-- Node.js 18+ (Node.js 20+ recommended)
-- npm (comes with Node.js)
+## ✨ Features
 
-## Clone and Setup
+- **📂 Local Folder Browser** — pick any folder from your machine or drag & drop
+- **🌳 File Tree** — expandable tree with file icons, sizes, and token estimates
+- **⭐ Smart Prioritization** — README, entry points, configs sorted to the top
+- **🧠 Token Budget Bar** — set a budget (4K–128K), color-coded progress bar warns when you're close
+- **📝 Prompt Templates** — 6 built-in templates (Code Review, Explain, Find Bugs, Write Tests, Refactor, Documentation)
+- **✏️ Custom Templates** — write your own with `{files}` placeholder, saved to localStorage
+- **🔍 Filter** — quickly find files by name or path
+- **📋 Copy / Download** — one-click copy or download as `.txt`
+- **🌙 Dark Mode** — default dark theme, toggle to light
+- **🚫 Smart Ignores** — built-in patterns for node_modules, .git, images, etc.
+- **📄 .gitignore Support** — auto-loads `.gitignore` patterns when present
 
-```bash
-git clone <your-repo-url>
-cd prompt-from-tree
-npm install
-```
+## 🚀 Usage
 
-## Run Locally
+1. Open `index.html` in Chrome, Edge, or Brave
+2. Click "Choose Folder" or drag & drop a folder
+3. Select files from the tree
+4. Optionally pick a prompt template
+5. Click "Generate" → Copy to clipboard
 
-Run frontend + backend together:
+**No installation, no server, no dependencies.**
 
-```bash
-npm run dev:all
-```
+## ⚠️ Browser Support
 
-Then open `http://localhost:5173`.
+Requires the [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API), which is supported in:
+- ✅ Chrome 86+
+- ✅ Edge 86+
+- ✅ Brave
+- ❌ Firefox (not supported)
+- ❌ Safari (not supported)
 
-### Ports
+## 🔗 See Also
 
-- Frontend (Vite): `5173`
-- Backend (Express): `5175`
-
-## Run Frontend and Backend Separately
-
-In terminal 1:
-
-```bash
-npm run server
-```
-
-In terminal 2:
-
-```bash
-npm run dev
-```
-
-## Build for Production
-
-```bash
-npm run build
-```
-
-## Notes
-
-- `node_modules/`, `dist/`, `.idea/`, `.vite/`, `.vercel/`, and `.env*` are ignored by git.
-- `.filetreeignore` is committed and defines project-level file exclusion patterns.
-- This app reads local filesystem paths through the backend; that behavior is intended for local use.
+- [repo-to-prompt](https://github.com/AntGro/repo-to-prompt) — the GitHub repo version (browse remote repos via GitHub API)
