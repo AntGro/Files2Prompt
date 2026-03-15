@@ -1,4 +1,4 @@
-# Files2Prompt
+# [Files2Prompt](https://antgro.github.io/Files2Prompt/)
 
 **Local folders → prompt-ready text**
 
